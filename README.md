@@ -8,7 +8,7 @@ sandwichboard.co.nz is your go-to platform for discovering local dining spots ac
 
 ### Database Schema
 
-View the (database schema)(https://dbdiagram.io/d/sandwichboard-67456006e9daa85acab574ab).
+View the [database schema](https://dbdiagram.io/d/sandwichboard-67456006e9daa85acab574ab).
 
 <!-- ROADMAP -->
 
