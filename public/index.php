@@ -34,13 +34,13 @@
 
                 });
 
-                $router->get( '/(\d+)', function( $product_id ) {
+                $router->get( '/', function( $product_id ) {
 
                     echo $product_id;
 
                 });
 
-                $router->post( '/(\d+)', function( $product_id ) {
+                $router->post( '/', function( $product_id ) {
 
                     echo $product_id;
 
