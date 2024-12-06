@@ -6,6 +6,12 @@
 
     require_once( dirname( __DIR__, 1 ) . '/vendor/autoload.php' );
 
+    // Template
+
+    $loader = new \Twig\Loader\FilesystemLoader( dirname( __DIR__, 1 ) . '/templates' );
+
+    $template = new \Twig\Environment( $loader, [ "debug" => false, "cache" => dirname(__DIR__, 1) . "/cache", "auto_reload" => true, ] );
+
     // Router
 
     $router = new \Bramus\Router\Router( );
@@ -16,7 +22,25 @@
 
         // Places
 
-        $router->mount( '/place', function( ) use ($router) {
+        $router->mount( '/places', function( ) use ($router) {
+
+            // Insert
+
+            $router->mount( '/insert', function( ) use ($router) {
+
+                $router->get( '/', function( ) {
+
+                    global $template;
+
+                    echo $template->render( 'admin/places/insert.html' );
+
+                });
+
+                $router->post( '/', function( ) {
+
+                });
+
+            });
 
             // Place
 
@@ -36,7 +60,9 @@
 
                 $router->get( '/', function( $product_id ) {
 
-                    echo $product_id;
+                    global $template;
+
+                    echo $template->render( 'admin/places/update.html' );
 
                 });
 
@@ -52,7 +78,9 @@
 
             $router->get( '/', function( ) {
 
-                echo "Admin Homepage";
+                global $template;
+
+                echo $template->render( 'admin/places/homepage.html' );
 
             });
 
@@ -62,7 +90,9 @@
 
         $router->get( '/', function( ) {
 
-            echo "Admin Homepage";
+            global $template;
+
+            echo $template->render( 'admin/homepage.html' );
 
         });
 
@@ -72,7 +102,9 @@
 
     $router->get( '/', function( ) {
 
-        echo "Homepage";
+        global $template;
+
+        echo $template->render( 'homepage.html' );
 
     });
 
