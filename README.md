@@ -27,3 +27,4 @@ See the [open issues](https://github.com/drewdeakin/sandwichboard/issues) for a 
 
 - Twitter: [@drewdeakin](https://twitter.com/drewdeakin)
 - Github: [@drewdeakin](https://github.com/drewdeakin)
+- LinkedIn: [Drew Deakin](https://www.linkedin.com/in/4ndr3wd34k1n/)
