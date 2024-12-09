@@ -1,8 +1,9 @@
 {
     "require": {
-        "twig/twig": "^3.16",
         "bramus/router": "^1.6",
         "catfan/medoo": "^2.1",
-        "hassankhan/config": "^3.1"
+        "hassankhan/config": "^3.1",
+        "twig/twig": "^3.11",
+        "ausi/slug-generator": "^1.1"
     }
 }

@@ -1,0 +1,17 @@
+<ul class="breadcrumbs">
+    <li><a href="/">Home</a></li>
+    <li><a href="/admin/">Control Panel</a></li>
+    <li><span>Places</span></li>
+</ul>
+
+<h1>Places</h1>
+
+<a href="/admin/places/insert/">Add Place</a>
+
+<table>
+{% for item in places %}
+    <tr>
+        <td><a href="/admin/places/{{ item.id }}">{{ item.name }}</a></td>
+    </tr>
+{% endfor %}
+</table>

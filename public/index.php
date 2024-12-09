@@ -1,16 +1,39 @@
 <?php
 
+    session_start();
+
     date_default_timezone_set( 'Pacific/Auckland' );
+
+    ini_set( 'display_errors', 1 );
+    ini_set( 'display_startup_errors', 1 );
+    error_reporting( E_ALL );
 
     // Composer
 
     require_once( dirname( __DIR__, 1 ) . '/vendor/autoload.php' );
+
+    // Config
+
+    $config = new \Noodlehaus\Config( dirname( __DIR__, 1 ) . '/config.json' );
 
     // Template
 
     $loader = new \Twig\Loader\FilesystemLoader( dirname( __DIR__, 1 ) . '/templates' );
 
     $template = new \Twig\Environment( $loader, [ "debug" => false, "cache" => dirname(__DIR__, 1) . "/cache", "auto_reload" => true, ] );
+
+    // Database
+
+    $database = new \Medoo\Medoo([
+        "type" => "mysql",
+        "host" => $config->get( 'mysql.host' ),
+        "database" => $config->get( 'mysql.database' ),
+        "username" => $config->get( 'mysql.username' ),
+        "password" => $config->get( 'mysql.password' ),
+        "port" => $config->get( 'mysql.port' ) ?? NULL,
+        "charset" => "utf8",
+        "error" => PDO::ERRMODE_EXCEPTION
+    ]);
 
     // Router
 
@@ -30,13 +53,43 @@
 
                 $router->get( '/', function( ) {
 
+                    global $database;
                     global $template;
 
-                    echo $template->render( 'admin/places/insert.html' );
+                    $regions = $database->select( 'region', [ "region_id(id)", "region_name(name)" ] );
+
+                    echo $template->render( 'admin/places/insert.html', [
+                        "regions" => $regions,
+                    ]);
 
                 });
 
                 $router->post( '/', function( ) {
+
+                    global $database;
+
+                    $slug = new \Ausi\SlugGenerator\SlugGenerator( );
+
+                    if( empty( $_POST['suburb_id'] ) ): $_POST['suburb_id'] = NULL; endif;
+
+                    $database->insert( 'place', [
+                        "region_id" => $_POST['region_id'],
+                        "city_id" => $_POST['city_id'],
+                        "suburb_id" => $_POST['suburb_id'],
+                        "place_name" => $_POST['place_name'],
+                        "place_slug" => $slug->generate( $_POST['place_name'] ),
+                        "place_created" => time( ),
+                        "place_updated" => time( ),
+                    ]);
+
+                    $place_id = $database->id();
+
+                    $_SESSION['toast'] = [
+                        "type" => "success",
+                        "message" => "'" . $_POST['place_name'] . "' has been created."
+                    ];
+
+                    header( 'Location: /admin/places/' . $place_id );
 
                 });
 
@@ -49,26 +102,178 @@
                 // Menu
 
                 $router->mount( '/menu', function( ) use ($router) {
+                    
+                    $router->mount( '/insert', function( ) use ($router) {
 
-                    $router->get( '/', function( $product_id ) {
+                        $router->get( '/', function( $place_id ) {
 
-                        echo $product_id;
+                            global $database;
+                            global $template;
+        
+                            if( $database->has( 'place', [ "place_id" => $place_id ] ) ):
+    
+                                echo $template->render( 'admin/places/menu/insert.html', [
+                                    "place" => [
+                                        "id" => $place_id,
+                                    ],
+                                ]);
+    
+                            else:
+    
+                                header( $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found' );
+        
+                            endif;
+
+                        });
+
+                        $router->post( '/', function( $place_id ) {
+
+                            global $database;
+        
+                            if( $database->has( 'place', [ "place_id" => $place_id ] ) ):
+
+                                $slug = new \Ausi\SlugGenerator\SlugGenerator( );
+
+                                $database->insert( 'menu', [
+                                    "place_id" => $place_id,
+                                    "menu_name" => $_POST['menu_name'],
+                                    "menu_slug" => $slug->generate( $_POST['menu_name'] ),
+                                    "menu_created" => time( ),
+                                    "menu_updated" => time( ),
+                                ]);
+
+                                header( 'Content-Type: application/json' );
+
+                                $data['success'] = true;
+    
+                                echo json_encode( $data );
+    
+                            else:
+    
+                                header( $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found' );
+        
+                            endif;
+
+                        });
+
+
+                    });
+
+                    $router->mount( '/(\d+)', function( ) use ($router) {
+
+                        $router->get( '/', function( $menu_id ) {
+
+                        });
+
+                    });
+
+                    $router->get( '/', function( $place_id ) {
+
+                        global $database;
+                        global $template;
+    
+                        if( $database->has( 'place', [ "place_id" => $place_id ] ) ):
+
+                            $menus = $database->select( 'menu', [ "menu_id(id)", "menu_name(name)" ], [ "place_id" => $place_id ] );
+
+                            echo $template->render( 'admin/places/menu/homepage.html', [
+                                "menus" => $menus,
+                                "place" => [
+                                    "id" => $place_id,
+                                ],
+                            ]);
+
+                        else:
+
+                            header( $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found' );
+    
+                        endif;
 
                     });
 
                 });
 
-                $router->get( '/', function( $product_id ) {
+                $router->get( '/', function( $place_id ) {
 
+                    global $database;
                     global $template;
 
-                    echo $template->render( 'admin/places/update.html' );
+                    if( $database->has( 'place', [ "place_id" => $place_id ] ) ):
+
+                        if( !isset( $_SESSION['toast'] ) ): $_SESSION['toast'] = NULL; endif;
+
+                        $place = $database->get( 'place', [ "region_id", "city_id", "suburb_id", "place_name" ], [ "place_id" => $place_id ]);
+
+                        $regions = $database->select( 'region', [ "region_id(id)", "region_name(name)" ] );
+                        $cities = $database->select( 'city', [ "city_id(id)", "city_name(name)" ], [ "region_id" => $place['region_id'] ] );
+                        $suburbs = $database->select( 'suburb', [ "suburb_id(id)", "suburb_name(name)" ], [ "city_id" => $place['city_id'] ] );
+
+                        echo $template->render( 'admin/places/update.html', [
+                            "cities" => $cities,
+                            "form" => [
+                                "value" => $place,
+                            ],
+                            "place" => [
+                                "id" => $place_id,
+                            ],
+                            "regions" => $regions,
+                            "suburbs" => $suburbs,
+                            "toast" => $_SESSION['toast'],
+                        ]);
+
+                        unset( $_SESSION['toast'] );
+
+                    else:
+
+                        header( $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found' );
+
+                    endif;
 
                 });
 
-                $router->post( '/', function( $product_id ) {
+                $router->post( '/', function( $place_id ) {
 
-                    echo $product_id;
+                    global $database;
+                    global $template;
+
+                    if( $database->has( 'place', [ "place_id" => $place_id ] ) ):
+
+                        $slug = new \Ausi\SlugGenerator\SlugGenerator( );
+
+                        $database->update( 'place', [
+                            "region_id" => $_POST['region_id'],
+                            "place_name" => $_POST['place_name'],
+                            "place_slug" => $slug->generate( $_POST['place_name'] ),
+                            "place_updated" => time( ),
+                        ], [
+                            "place_id" => $place_id
+                        ]);
+
+                        $regions = $database->select( 'region', [ "region_id(id)", "region_name(name)" ] );
+                        $cities = $database->select( 'city', [ "city_id(id)", "city_name(name)" ], [ "region_id" => $_POST['region_id'] ] );
+                        $suburbs = $database->select( 'suburb', [ "suburb_id(id)", "suburb_name(name)" ], [ "city_id" => $_POST['city_id'] ] );
+
+                        echo $template->render( 'admin/places/update.html', [
+                            "cities" => $cities,
+                            "form" => [
+                                "value" => $_POST
+                            ],
+                            "place" => [
+                                "id" => $place_id,
+                            ],
+                            "regions" => $regions,
+                            "suburbs" => $suburbs,
+                            "toast" => [
+                                "type" => "success",
+                                "message" => "'" . $_POST['place_name'] . "' has been updated."
+                            ]
+                        ]);
+
+                    else:
+
+                        header( $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found' );
+
+                    endif;
 
                 });
 
@@ -78,9 +283,14 @@
 
             $router->get( '/', function( ) {
 
+                global $database;
                 global $template;
 
-                echo $template->render( 'admin/places/homepage.html' );
+                $places = $database->select( 'place', [ "place_id(id)", "place_name(name)" ] );
+
+                echo $template->render( 'admin/places/homepage.html', [
+                    "places" => $places,
+                ]);
 
             });
 
@@ -93,6 +303,68 @@
             global $template;
 
             echo $template->render( 'admin/homepage.html' );
+
+        });
+
+    });
+
+    // API
+
+    $router->mount( '/api', function( ) use ($router) {
+
+        // City
+
+        $router->mount( '/city', function( ) use ($router) {
+
+            $router->get( '/', function( ) {
+
+                global $database;
+
+                if( isset( $_GET['region'] ) && is_numeric( $_GET['region'] ) ):
+
+                    $where = [ 'region_id' => $_GET['region'] ];
+
+                else:
+
+                    $where = [];
+
+                endif;
+
+                $cities = $database->select( 'city', [ "city_id(id)", "city_name(name)" ], $where );
+
+                header( 'Content-Type: application/json' );
+
+                echo json_encode( $cities );
+
+            });
+
+        });
+
+        // Suburb
+
+        $router->mount( '/suburb', function( ) use ($router) {
+
+            $router->get( '/', function( ) {
+
+                global $database;
+
+                if( isset( $_GET['city'] ) && is_numeric( $_GET['city'] ) ):
+
+                    $where = [ 'city_id' => $_GET['city'] ];
+
+                else:
+
+                    $where = [];
+
+                endif;
+
+                $surburbs = $database->select( 'suburb', [ "suburb_id(id)", "suburb_name(name)" ], $where );
+
+                header( 'Content-Type: application/json' );
+
+                echo json_encode( $surburbs );
+
+            });
 
         });
 

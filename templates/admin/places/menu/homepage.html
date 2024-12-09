@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block main %}
+<ul class="breadcrumbs">
+    <li><a href="/">Home</a></li>
+    <li><a href="/admin/">Control Panel</a></li>
+    <li><a href="/admin/places/">Places</a></li>
+    <li><span>Update</span></li>
+    <li><span>Menu</span></li>
+</ul>
+
+<h1>Menu</h1>
+
+<a href="/admin/places/{{ place.id }}/menu/insert/" rel="modal:open">Add Menu</a>
+
+<table>
+{% for item in menus %}
+    <tr>
+        <td><a href="/admin/places/{{ place.id }}/menu/{{ item.id }}">{{ item.name }}</a></td>
+    </tr>
+{% endfor %}
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+{% endblock %}
