@@ -1,0 +1,72 @@
+<form method="post" action="/admin/places/{{ place.id }}/menu/{{ menu.id }}/item/{{ item.id }}" class="update-item">
+
+    <h3 class="form-group">{{ form.value.item_name }}</h3>
+
+    <div class="form-group">
+        <label class="form-label" for="section_id">Section</label>
+        <select class="form-select" id="section_id" name="section_id">
+{% for item in sections %}
+            <option value="{{ item.id }}"{% if item.id == form.value.section_id %} selected{% endif %}>{{ item.name }}</option>
+{% endfor %}
+        </select>
+    </div>
+
+    <div class="form-grid form-group">
+
+        <div>
+            <label class="form-label" for="item_name">Name</label>
+            <input class="form-input" type="text" id="item_name" name="item_name" placeholder="Name" value="{{ form.value.item_name }}" />
+        </div>
+
+        <div>
+            <label class="form-label" for="item_price">Price</label>
+            <input class="form-input" type="number" id="item_price" name="item_price" placeholder="Price" step=".01" value="{{ form.value.item_price }}" />
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="item_description">Description</label>
+        <textarea class="form-input" id="item_description" name="item_description" placeholder="Description">{{ form.value.item_description }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary">Submit</button>
+    </div>
+
+</form>
+
+<script>
+
+$("form.update-item").submit(function(event) {
+
+ 	var formData = {
+        section_id: $('#section_id').find(":selected").val(),
+        item_name: $("#item_name").val(),
+        item_price: $("#item_price").val(),
+        item_description: $("#item_description").val(),
+ 	};
+
+ 	$.ajax({
+ 		type: "POST",
+ 		url: "/admin/places/{{ place.id }}/menu/{{ menu.id }}/item/{{ item.id }}",
+ 		data: formData,
+ 		dataType: "json",
+ 		encode: true,
+ 	}).done(function(data) {
+
+        if (!data.success) {
+
+        } else {
+
+            window.location.href = "/admin/places/{{ place.id }}/menu/{{ menu.id }}/";
+
+        }
+
+ 	});
+
+ 	event.preventDefault();
+
+ });
+
+</script>

@@ -1,17 +1,40 @@
-<ul class="breadcrumbs">
-    <li><a href="/">Home</a></li>
-    <li><a href="/admin/">Control Panel</a></li>
-    <li><span>Places</span></li>
-</ul>
+{% extends "base.html" %}
 
-<h1>Places</h1>
+{% block main %}
+<section>
+    <div class="row">
 
-<a href="/admin/places/insert/">Add Place</a>
+        <ul class="breadcrumbs">
+            <li><a href="/">Home</a></li>
+            <li><a href="/admin/">Control Panel</a></li>
+            <li><span>Places</span></li>
+        </ul>
 
-<table>
+        <h1>Places</h1>
+
+    </div>
+    <div class="row">
+
+        <a href="/admin/places/insert/">Add Place</a>
+
+    </div>
+    <div class="row">
+
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
 {% for item in places %}
-    <tr>
-        <td><a href="/admin/places/{{ item.id }}">{{ item.name }}</a></td>
-    </tr>
+                <tr>
+                    <td><a href="/admin/places/{{ item.id }}">{{ item.name }}</a></td>
+                </tr>
 {% endfor %}
-</table>
+            </tbody>
+        </table>
+
+    </div>
+</section>
+{% endblock %}

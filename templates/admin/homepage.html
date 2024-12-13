@@ -1,8 +1,21 @@
-<ul class="breadcrumbs">
-    <li><a href="/">Home</a></li>
-    <li><span>Control Panel</span></li>
-</ul>
+{% extends "base.html" %}
 
-<h1>Control Panel</h1>
+{% block main %}
+<section>
+    <div class="row">
+        
+        <ul class="breadcrumbs">
+            <li><a href="/">Home</a></li>
+            <li><span>Control Panel</span></li>
+        </ul>
 
-<a href="/admin/places/">Places</a>
+        <h1>Control Panel</h1>
+
+    </div>
+    <div class="row">
+
+        <a href="/admin/places/">Places</a>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block main %}
+<section>
+
+    <div class="row">
+
+        <ul class="breadcrumbs">
+            <li><a href="/">Home</a></li>
+            <li><a href="/admin/">Control Panel</a></li>
+            <li><a href="/admin/places/">Places</a></li>
+            <li><a href="/admin/places/{{ place.id }}">{{ place.name }}</a></li>
+            <li><a href="/admin/places/{{ place.id }}/menu/">Menu</a></li>
+            <li><span>{{ menu.name }}</span></li>
+        </ul>
+
+        <h1>Menu</h1>
+
+    </div>
+
+</section>
+<section>
+    
+    <div class="grid">
+
+        <div>
+
+            <div class="row">
+
+                <ul class="side-navigation">
+                    <li><a href="/admin/places/{{ place.id }}">Details</a></li>
+                    <li class="active"><a href="/admin/places/{{ place.id }}/menu/">Menu</a></li>
+                    <li><a href="/admin/places/{{ place.id }}/photos/">Photos</a></li>
+                </ul>
+
+            </div>
+
+        </div>
+        <div class="grid-column-4">
+
+            <div class="row">
+
+                <ul class="admin-actions">
+                    <li><a href="/admin/places/{{ place.id }}/menu/{{ menu.id }}/section/insert/" class="btn action-insert" rel="modal:open"><span>Add Section</span></a></li>
+                    <li><a href="/admin/places/{{ place.id }}/menu/{{ menu.id }}/item/insert/" class="btn action-insert{% if sections is empty %} disabled{% endif %}" rel="modal:open" ><span>Add Item</span></a></li>
+                </ul>
+
+            </div>
+            <div class="row">
+
+{% if sections %}
+{% for item in sections %}
+
+                <div class="menu-section-admin">
+
+                    <div class="menu-section-admin-header">
+
+                        <h3>{{ item.name }}</h3>
+
+                        <ul class="menu-section-admin-actions">
+                            <li><a href="/admin/places/{{ place.id }}/menu/{{ menu.id }}/section/{{ item.id }}" class="btn btn-edit" rel="modal:open"><span>Edit</span></a></li>
+                            <li><a href="/admin/places/{{ place.id }}/menu/{{ menu.id }}/section/{{ item.id }}/delete" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this?');"><span>Delete</span></a></li>
+                        </ul>
+
+                    </div>
+                    <div class="menu-section-admin-content">
+
+{% if item.items %}
+                        <ul class="menu">
+{% for item in item.items %}
+                            <li class="menu-item">
+                                <div class="menu-item-header">
+                                    <p class="menu-item-name">{{ item.name }}</p>
+                                    <p class="menu-item-price">${{ item.price }}</p>
+                                </div>
+{% if item.description %}
+                                <div class="menu-item-body markdown">
+                                    <p>{{ item.description }}</p>
+                                </div>
+{% endif %}
+                                <ul class="menu-item-actions">
+                                    <li><a href="/admin/places/{{ place.id }}/menu/{{ menu.id }}/item/{{ item.id }}" rel="modal:open">Edit</a></li>
+                                    <li><a href="/admin/places/{{ place.id }}/menu/{{ menu.id }}/item/{{ item.id }}/delete" onclick="return confirm('Are you sure you want to delete this?');">Delete</a></li>
+                                </ul>
+                            </li>
+{% endfor %}
+                        </ul>
+{% else %}
+
+<!-- Empty State -->
+
+{% endif %}
+
+                    </div>
+
+                </div>
+{% endfor %}
+{% else %}
+
+<!-- Empty State -->
+
+{% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}
+
+{% block footer %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+
+<script>
+
+$.modal.defaults.clickClose = false;
+$.modal.defaults.closeExisting = true;
+
+</script>
+{% endblock %}
