@@ -1,0 +1,3 @@
+/cache/*
+/public/adminer.php
+config.json

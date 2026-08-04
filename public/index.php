@@ -29,12 +29,12 @@
 
   $template = new \Twig\Environment( $loader, [
   	"debug" => true,
-  	"cache" => __DIR__ . "/cache",
+  	"cache" => dirname( __DIR__, 1 ) . "/cache",
   	"auto_reload" => true,
   ]);
 
   $template->addGlobal( 'site', $config->get( 'site' ) );
-  $template->addGlobal( 'updated', filemtime( __DIR__ . '/public/index.php' ) );
+  $template->addGlobal( 'updated', filemtime( __DIR__ . '/index.php' ) );
 
   // Router
 
