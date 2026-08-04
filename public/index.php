@@ -2,9 +2,6 @@
 
   date_default_timezone_set( 'Pacific/Auckland' );
 
-  error_reporting( E_ALL );
-  ini_set( 'display_errors', '1' );
-
   // Composer
 
   require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
@@ -28,7 +25,7 @@
 
   // Template
 
-  $loader = new \Twig\Loader\FilesystemLoader( __DIR__ . "/templates/" );
+  $loader = new \Twig\Loader\FilesystemLoader( dirname( __DIR__, 1 ) . "/templates/" );
 
   $template = new \Twig\Environment( $loader, [
   	"debug" => true,
@@ -51,6 +48,10 @@
 
     $router->get( '/', function( ) {
 
+      global $template;
+
+      echo $template->render( 'admin/homepage.twig' );
+
     });
 
   });
@@ -59,6 +60,10 @@
   $router->mount( '/login', function( ) use ( $router ) {
 
     $router->get( '/', function( ) {
+
+      global $template;
+
+      echo $template->render( 'user/login.twig' );
 
     });
 
@@ -72,6 +77,10 @@
   $router->mount( '/manage', function( ) use ( $router ) {
 
     $router->get( '/', function( ) {
+
+      global $template;
+
+      echo $template->render( 'manage/homepage.twig' );
 
     });
 
@@ -109,6 +118,10 @@
 
     $router->get( '/', function( ) {
 
+      global $template;
+
+      echo $template->render( 'user/register.twig' );
+
     });
 
     $router->post( '/', function( ) {
@@ -122,11 +135,19 @@
 
     $router->get( '/', function( ) {
 
+      global $template;
+
+      echo $template->render( 'submit/homepage.twig' );
+
     });
 
   });
 
   $router->get( '/', function( ) {
+
+    global $template;
+
+    echo $template->render( 'homepage.twig' );
 
   });
 
