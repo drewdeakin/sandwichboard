@@ -11,7 +11,7 @@
 
   // Config
 
-  $config = new \Noodlehaus\Config( ( __DIR__, 1 ) . "/config.json" );
+  $config = new \Noodlehaus\Config( __DIR__ . "/config.json" );
 
   // Database
 
