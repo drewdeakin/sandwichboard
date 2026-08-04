@@ -2,6 +2,9 @@
 
   date_default_timezone_set( 'Pacific/Auckland' );
 
+  error_reporting( E_ALL );
+  ini_set( 'display_errors', '1' );
+
   // Composer
 
   require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
