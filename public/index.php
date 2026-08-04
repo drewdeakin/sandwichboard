@@ -1,6 +1,39 @@
 <?php
 
+  date_default_timezone_set( 'Pacific/Auckland' );
+
+  // Composer
+
   require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
+
+  // Config
+
+  $config = new \Noodlehaus\Config( ( __DIR__, 1 ) . "/config.json" );
+
+  // Database
+
+  $database = new \Medoo\Medoo([
+    "type" => "mysql",
+    "host" => $config->get( "mysql.host" ),
+    "database" => $config->get( "mysql.database" ),
+    "username" => $config->get( "mysql.username" ),
+    "password" => $config->get( "mysql.password" ),
+    "port" => $config->get( "mysql.port" ) ?? null,
+    "charset" => "utf8",
+    "error" => PDO::ERRMODE_EXCEPTION,
+  ]);
+
+  // Template
+
+  $loader = new \Twig\Loader\FilesystemLoader( __DIR__ . "/templates/" );
+
+  $template = new \Twig\Environment( $loader, [
+  	"debug" => true,
+  	"cache" => __DIR__ . "/cache",
+  	"auto_reload" => true,
+  ]);
+
+  // Router
 
   $router = new \Bramus\Router\Router( );
 
