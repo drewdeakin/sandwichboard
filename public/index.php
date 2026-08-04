@@ -33,6 +33,9 @@
   	"auto_reload" => true,
   ]);
 
+  $template->addGlobal( 'site', $config->get( 'site' ) );
+  $template->addGlobal( 'updated', filemtime( __DIR__ . '/public/index.php' ) );
+
   // Router
 
   $router = new \Bramus\Router\Router( );

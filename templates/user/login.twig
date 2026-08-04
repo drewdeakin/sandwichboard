@@ -1,0 +1,72 @@
+{% extends "sites/" ~ site.name ~ "/base.twig" %}
+
+{% set meta = { 'title': 'Log in – ' ~ site.title, 'robots': 'noindex, follow' } %}
+
+{% block main %}
+
+<section>
+
+  <div class="row">
+
+    <h1>Welcome back!</h1>
+    <p>Log in to your account</p>
+
+  </div>
+{% if toast %}
+  <div class="row">
+
+    <div class="toast toast-{{ toast.type }}">
+      {{ toast.icon|raw }}
+      <div class="toast-content">
+{% if toast.heading %}
+        <p><strong>{{ toast.heading }}</strong></p>
+{% endif %}
+        <p>{{ toast.message|raw }}</p>
+{% if toast.actions %}
+        <ul>
+{% for action in toast.actions %}
+          <li><a href="{{ action.href }}">{{ action.label }}</a></li>
+{% endfor %}
+        </ul>
+{% endif %}
+      </div>
+    </div>
+
+  </div>
+{% endif %}
+  <form action="/login/" method="post" class="row">
+
+    <div class="form-group{% if form.error.user_email %} has-error{% endif %}">
+      <label class="form-label" for="user_email">Email address</label>
+      <input class="form-input" type="email" name="user_email" id="user_email" placeholder="Email address" value="{{ form.value.user_email }}">
+{% if form.error.user_email %}
+      <p class="form-input-hint">{{ form.error.user_email.0|raw }}</p>
+{% endif %}
+    </div>
+
+    <div class="form-group{% if form.error.user_password %} has-error{% endif %}">
+      <label class="form-label" for="user_password">Password</label>
+      <input class="form-input" type="password" name="user_password" id="user_password" placeholder="Password">
+{% if form.error.user_password %}
+      <p class="form-input-hint">{{ form.error.user_password.0|raw }}</p>
+{% endif %}
+    </div>
+
+    <div class="form-group">
+      <button class="btn">Log in &rarr;</button>
+    </div>
+
+  </form>
+  <div class="row">
+
+    <ul class="user-actions">
+      <li><a href="/register/">Sign up for an account</a></li>
+      <li><a href="/password/forgot/">Forgot your password?</a></li>
+      <li><a href="/">&larr; Back to {{ site.title }}</a></li>
+    </ul>
+
+  </div>
+
+</section>
+
+{% endblock %}
