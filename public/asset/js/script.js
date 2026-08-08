@@ -9,3 +9,7 @@ var slideout = new Slideout({
 document.querySelector('.toggle-button').addEventListener('click', function() {
   slideout.toggle();
 });
+
+$('.dropdown-toggle').click(function() {
+  $(this).next('.dropdown').toggle();
+});

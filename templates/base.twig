@@ -10,7 +10,107 @@
       <meta name="description" content="{{ meta.description }}">
       <meta name="robots" content="{{ meta.robots }}" />
 
-      <link rel="stylesheet" href="/asset/css/style.css">
+      <style type="text/css">
+
+        :root {
+          --border-color: rgb(217, 217, 217);
+        }
+
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
+
+        *:not(dialog) {
+          margin: 0;
+        }
+
+        /* Body */
+
+        body {
+          background-color: rgb(225, 225, 225);
+        }
+
+        /* Wrap */
+
+        #wrap {
+          margin: 0px auto;
+          max-width: 860px;
+        }
+
+        /* Header */
+
+        header {
+          background-color: rgb(255, 255, 255);
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        header .row {
+          padding: 20px;
+        }
+
+        header .flex {
+          align-items: center;
+          display: flex;
+        }
+
+        header .flex-gap {
+          flex-grow: 1;
+        }
+
+        header .logo {
+          height: 14px;
+        }
+
+        /* Main */
+
+        main {
+          background-color: rgb(255, 255, 255);
+        }
+
+        main section {
+          padding: 20px;
+        }
+
+        /* Footer */
+
+        footer {
+          background-color: rgb(242, 242, 242);
+        }
+
+        footer .row {
+          padding: 20px;
+        }
+
+        @media screen and (min-width: 769px) {
+
+          .toggle-button {
+            display: none;
+          }
+
+          /* Header */
+
+          header .row {
+            padding: 20px 40px;
+          }
+
+          /* Main */
+
+          main section {
+            padding: 40px;
+          }
+
+          /* Footer */
+
+          footer .row {
+            padding: 20px 40px;
+          }
+
+        }
+
+      </style>
+
+      <link rel="preload" href="/asset/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+      <noscript><link rel="stylesheet" href="/asset/css/style.css"></noscript>
 
     </head>
     <body>
@@ -28,6 +128,43 @@
               <div class="flex">
 
                 <button class="toggle-button">☰</button>
+
+                <div class="flex-gap"></div>
+
+{% if user %}
+                <ul class="dropdown-user">
+                    <li>
+                      <a class="dropdown-toggle"><span class="user">Setting &amp; Account</span></a>
+
+                      <div class="dropdown">
+                        <ul>
+{% if user_role <= 2 %}
+                          <li><a href="/admin/">Admin</a></li>
+{% endif %}
+                          <li><a href="/account/">Account</a></li>
+                        </ul>
+                        <ul>
+                          <li><a href="/logout/">Log out</a></li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+{% else %}
+                  <ul class="dropdown-user mobile-only">
+                    <li>
+                      <a class="dropdown-toggle"><span class="user">Setting &amp; Account</span></a>
+                      <div class="dropdown">
+                        <ul>
+                          <li><a href="/login/">Log in</a></li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+
+                  <nav class="nav-user">
+                    <a href="/login/">Log in</a>
+                  </nav>
+{% endif %}
 
               </div>
             </div>

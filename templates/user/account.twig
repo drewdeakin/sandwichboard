@@ -1,0 +1,167 @@
+{% extends "base.twig" %}
+
+{% set meta = { 'title': 'Account – ' ~ site.title, 'robots': 'noindex, follow' } %}
+
+{% block main %}
+
+            <section>
+
+              <div class="row">
+
+                <div class="title-text">
+
+                  <ul class="breadcrumbs">
+                    <li><a href="/">Home</a></li>
+                    <li><span>Account</span></li>
+                  </ul>
+
+                  <h1>Account</h1>
+
+                </div>
+
+              </div>
+              <div class="row">
+
+                <div class="form-section">
+
+                  <div class="form-section_title">Email Address</div>
+                  <form action="/account/email/" method="post" class="form-section_fields">
+{% if toast.section == 'email' %}
+
+                    <div class="form-group toast toast-{{ toast.type }}">
+                      {{ toast.icon|raw }}
+                      <div class="toast-content">
+{% if toast.heading %}
+                        <p><strong>{{ toast.heading }}</strong></p>
+{% endif %}
+                        <p>{{ toast.message|raw }}</p>
+                      </div>
+                    </div>
+{% endif %}
+
+                    <div class="form-group">
+                      <label class="form-label">Current email address</label>
+                      <input class="form-input" type="email" placeholder="Current email address" value="{{ account.email }}" disabled>
+                    </div>
+
+                    <div class="form-group{% if form.error.user_email %} has-error{% endif %}">
+                      <label class="form-label" for="user_email">New email address</label>
+                      <input class="form-input" type="email" name="user_email" id="user_email" placeholder="New email address" value="{{ form.value.user_email }}">
+{% if form.error.user_email %}
+                      <p class="form-input-hint">{{ form.error.user_email.0|raw }}</p>
+{% endif %}
+                    </div>
+
+                    <div class="form-group{% if form.error.user_password %} has-error{% endif %}">
+                      <label class="form-label" for="user_password">Current password</label>
+                      <input class="form-input" type="password" name="user_password" id="user_password" placeholder="Current password">
+{% if form.error.user_password %}
+                      <p class="form-input-hint">{{ form.error.user_password.0|raw }}</p>
+{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                      <button class="btn">Update email address &rarr;</button>
+                    </div>
+
+                  </form>
+
+                </div>
+
+                <div class="form-section">
+
+                  <div class="form-section_title">Password</div>
+                  <form action="/account/password/" method="post" class="form-section_fields">
+{% if toast.section == 'password' %}
+
+                    <div class="form-group toast toast-{{ toast.type }}">
+                      {{ toast.icon|raw }}
+                      <div class="toast-content">
+{% if toast.heading %}
+                        <p><strong>{{ toast.heading }}</strong></p>
+{% endif %}
+                        <p>{{ toast.message|raw }}</p>
+                      </div>
+                    </div>
+{% endif %}
+
+                    <div class="form-group{% if form.error.user_password_current %} has-error{% endif %}">
+                      <label class="form-label" for="user_password_current">Current password</label>
+                      <input class="form-input" type="password" name="user_password_current" id="user_password_current" placeholder="Current password">
+{% if form.error.user_password_current %}
+                      <p class="form-input-hint">{{ form.error.user_password_current.0|raw }}</p>
+{% endif %}
+                    </div>
+
+                    <div class="form-group{% if form.error.user_password_new %} has-error{% endif %}">
+                      <label class="form-label" for="user_password_new">New password</label>
+                      <input class="form-input" type="password" name="user_password_new" id="user_password_new" placeholder="New password">
+{% if form.error.user_password_new %}
+                      <p class="form-input-hint">{{ form.error.user_password_new.0|raw }}</p>
+{% else %}
+                      <p class="form-input-hint">Must be at least 6 characters</p>
+{% endif %}
+                    </div>
+
+                    <div class="form-group{% if form.error.user_password_confirm %} has-error{% endif %}">
+                      <label class="form-label" for="user_password_confirm">Confirm password</label>
+                      <input class="form-input" type="password" name="user_password_confirm" id="user_password_confirm" placeholder="Confirm password">
+{% if form.error.user_password_confirm %}
+                      <p class="form-input-hint">{{ form.error.user_password_confirm.0|raw }}</p>
+{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                      <button class="btn">Update password &rarr;</button>
+                    </div>
+
+                  </form>
+
+                </div>
+
+                <div class="form-section">
+
+                  <div class="account-delete">
+
+                    <div class="form-section_title">Delete Account</div>
+                    <form action="/account/delete/" method="post" class="form-section_fields">
+{% if toast.section == 'delete' %}
+
+                      <div class="form-group toast toast-{{ toast.type }}">
+                        {{ toast.icon|raw }}
+                        <div class="toast-content">
+{% if toast.heading %}
+                          <p><strong>{{ toast.heading }}</strong></p>
+{% endif %}
+                          <p>{{ toast.message|raw }}</p>
+                        </div>
+                      </div>
+{% endif %}
+
+                      <div class="form-group markdown">
+                        <p>This removes your login and personal details. It can't be undone.</p>
+                      </div>
+
+                      <div class="form-group{% if form.error.user_password_delete %} has-error{% endif %}">
+                        <label class="form-label" for="user_password_delete">Current password</label>
+                        <input class="form-input" type="password" name="user_password_delete" id="user_password_delete" placeholder="Current password">
+{% if form.error.user_password_delete %}
+                        <p class="form-input-hint">{{ form.error.user_password_delete.0|raw }}</p>
+{% endif %}
+                      </div>
+
+                      <div class="form-group">
+                        <button class="btn">Delete account &rarr;</button>
+                      </div>
+
+                    </form>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+{% endblock %}

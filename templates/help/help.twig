@@ -1,0 +1,34 @@
+{% extends "base.twig" %}
+
+{% block main %}
+
+            <section>
+
+              <div class="row">
+
+                <div class="title-text">
+
+                  <ul class="breadcrumbs">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/help/">Help & FAQ</a></li>
+                    <li><span>{{ help.help_name }}</span></li>
+                  </ul>
+
+                  <h1>{{ help.help_name }}</h1>
+
+                </div>
+
+              </div>
+              <div class="row">
+
+                <div class="markdown">
+
+{{ help.help_page|raw }}
+
+                </div>
+
+              </div>
+
+            </section>
+
+{% endblock %}
